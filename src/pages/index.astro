@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NewsCard from '../components/NewsCard.astro';
+import RecentNews from '../components/RecentNews.astro';
+
+const featuredNews = [
+  {
+    id: 1,
+    title: "Importante acontecimiento nacional marca la jornada",
+    excerpt: "Los detalles más relevantes del suceso que impacta al país...",
+    image: "https://via.placeholder.com/800x400",
+    category: "Nacional",
+    date: "2024-03-20",
+    author: {
+      name: "Juan Pérez",
+      avatar: "https://via.placeholder.com/50"
+    }
+  },
+  {
+    id: 2,
+    title: "Nuevo récord en el deporte chileno",
+    excerpt: "Destacada actuación de deportistas nacionales en competencia internacional...",
+    image: "https://via.placeholder.com/800x400",
+    category: "Deportes",
+    date: "2024-03-20",
+    author: {
+      name: "María Silva",
+      avatar: "https://via.placeholder.com/50"
+    }
+  },
+  {
+    id: 3,
+    title: "Innovación tecnológica revoluciona la industria",
+    excerpt: "Empresas chilenas adoptan nuevas tecnologías para mejorar sus servicios...",
+    image: "https://via.placeholder.com/800x400",
+    category: "Tecnología",
+    date: "2024-03-20",
+    author: {
+      name: "Pedro González",
+      avatar: "https://via.placeholder.com/50"
+    }
+  }
+];
+---
+
+<Layout title="La Cuarta - Las noticias más importantes">
+  <div class="container mx-auto px-4 grid grid-cols-12 gap-8">
+    <!-- Noticias Principales (9 columnas) -->
+    <main class="col-span-12 lg:col-span-9">
+      <section class="mb-12">
+        <h1 class="text-4xl font-heading font-bold text-secondary mb-8 border-b-4 border-primary pb-2 inline-block">
+          Últimas Noticias
+        </h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredNews.map(news => (
+            <NewsCard {...news} />
+          ))}
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-3xl font-heading font-bold text-secondary mb-8 border-b-4 border-primary pb-2 inline-block">
+          Tendencias
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredNews.map(news => (
+            <NewsCard {...news} />
+          ))}
+        </div>
+      </section>
+    </main>
+
+    <!-- Sidebar Noticias de Hoy (3 columnas) -->
+    <aside class="col-span-12 lg:col-span-3 space-y-8">
+      <div class="bg-white rounded-xl shadow-lg p-6 sticky top-32">
+        <h2 class="text-2xl font-heading font-bold text-secondary mb-6 border-b-4 border-primary pb-2 inline-block">
+          Noticias de Hoy
+        </h2>
+        <RecentNews />
+      </div>
+    </aside>
+  </div>
+</Layout>

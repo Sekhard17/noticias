@@ -1,0 +1,32 @@
+---
+// Componente de noticias del día con animación
+const todayNews = [
+  "🔥 Última hora: Importante anuncio del gobierno",
+  "⚽ La Roja se prepara para el próximo mundial",
+  "🎭 Festival de Viña anuncia artistas para 2025",
+  "💼 Economía: Peso chileno alcanza nuevo récord"
+];
+---
+
+<div class="relative h-8 overflow-hidden">
+  <div class="animate-news-ticker absolute left-0 whitespace-nowrap">
+    {todayNews.map(news => (
+      <span class="inline-block mr-8 text-primary font-semibold">{news}</span>
+    ))}
+  </div>
+</div>
+
+<style>
+  @keyframes newsTicker {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100%); }
+  }
+
+  .animate-news-ticker {
+    animation: newsTicker 20s linear infinite;
+  }
+
+  .animate-news-ticker:hover {
+    animation-play-state: paused;
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+// Navbar mejorado con logo centrado y elementos a los lados
+---
+
+<nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-20">
+      <!-- Elementos izquierdos -->
+      <div class="flex items-center space-x-6">
+        <a href="/nacional" class="text-gray-700 hover:text-primary transition-colors font-medium">Nacional</a>
+        <a href="/deportes" class="text-gray-700 hover:text-primary transition-colors font-medium">Deportes</a>
+        <a href="/espectaculos" class="text-gray-700 hover:text-primary transition-colors font-medium">Espectáculos</a>
+      </div>
+
+      <!-- Logo centrado -->
+      <div class="absolute left-1/2 transform -translate-x-1/2">
+        <a href="/" class="transform hover:scale-105 transition-transform duration-300">
+          <img src="/public/logo-cuarta.svg" alt="La Cuarta" class="h-14">
+        </a>
+      </div>
+
+      <!-- Elementos derechos -->
+      <div class="flex items-center space-x-6">
+        <button class="text-gray-700 hover:text-primary transition-colors">
+          <i class="fas fa-search text-xl"></i>
+        </button>
+        <a href="/login" class="text-gray-700 hover:text-primary transition-colors">
+          <i class="fas fa-user text-xl"></i>
+        </a>
+        <a href="/registro" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors font-medium">
+          Registrarse
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Espaciador para compensar el navbar fijo -->
+<div class="h-20"></div>

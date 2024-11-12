@@ -1,0 +1,73 @@
+---
+// Componente de noticias recientes con animación de deslizamiento
+const recentNews = [
+  {
+    id: 1,
+    title: "Última hora: Importante anuncio gubernamental",
+    time: "Hace 5 minutos",
+    category: "Política"
+  },
+  {
+    id: 2,
+    title: "Descubren nueva especie en el sur de Chile",
+    time: "Hace 15 minutos",
+    category: "Ciencia"
+  },
+  {
+    id: 3,
+    title: "Artista nacional triunfa en festival internacional",
+    time: "Hace 30 minutos",
+    category: "Cultura"
+  },
+  {
+    id: 4,
+    title: "Innovador proyecto chileno gana premio mundial",
+    time: "Hace 45 minutos",
+    category: "Tecnología"
+  },
+  {
+    id: 5,
+    title: "Récord de asistencia en evento deportivo",
+    time: "Hace 1 hora",
+    category: "Deportes"
+  }
+];
+---
+
+<div class="recent-news-container h-[500px] overflow-hidden relative">
+  <div class="animate-slide space-y-4">
+    {recentNews.map(news => (
+      <article class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors cursor-pointer border-l-4 border-primary">
+        <span class="text-xs font-semibold text-primary block mb-1">{news.category}</span>
+        <h3 class="font-medium text-gray-800 mb-2">{news.title}</h3>
+        <span class="text-xs text-gray-500">{news.time}</span>
+      </article>
+    ))}
+  </div>
+</div>
+
+<style>
+  @keyframes slide {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+
+  .animate-slide {
+    animation: slide 20s linear infinite;
+  }
+
+  .animate-slide:hover {
+    animation-play-state: paused;
+  }
+
+  .recent-news-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(transparent, white);
+    pointer-events: none;
+  }
+</style>

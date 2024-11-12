@@ -1,0 +1,43 @@
+---
+// Componente de tarjeta de noticia mejorado
+const { title, excerpt, image, category, date, author } = Astro.props;
+---
+
+<article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group">
+  <div class="relative">
+    <img 
+      src={image} 
+      alt={title} 
+      class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+    />
+    <div class="absolute top-0 right-0 bg-primary text-white px-3 py-1 rounded-bl-lg font-medium text-sm">
+      {category}
+    </div>
+  </div>
+  
+  <div class="p-6">
+    <h2 class="text-xl font-bold mb-3 text-secondary group-hover:text-primary transition-colors line-clamp-2">
+      <a href={`/noticias/${title.toLowerCase().replace(/ /g, '-')}`}>
+        {title}
+      </a>
+    </h2>
+    <p class="text-gray-600 mb-4 text-sm line-clamp-3">{excerpt}</p>
+    
+    <div class="flex items-center justify-between text-sm text-gray-500 border-t pt-4">
+      <div class="flex items-center">
+        <img 
+          src={author?.avatar} 
+          alt={author?.name} 
+          class="w-8 h-8 rounded-full mr-2 object-cover"
+        />
+        <span class="font-medium">{author?.name}</span>
+      </div>
+      <time datetime={date} class="text-xs">
+        {new Date(date).toLocaleDateString('es-CL', {
+          day: 'numeric',
+          month: 'short'
+        })}
+      </time>
+    </div>
+  </div>
+</article>

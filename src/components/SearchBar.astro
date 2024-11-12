@@ -1,0 +1,23 @@
+---
+// Componente de búsqueda con filtros por categoría
+---
+
+<div class="relative">
+  <div class="flex items-center bg-gray-100 rounded-lg p-2">
+    <input 
+      type="text" 
+      placeholder="Buscar noticias..." 
+      class="w-full bg-transparent border-none focus:outline-none px-2"
+    >
+    <select class="bg-transparent border-none focus:outline-none text-gray-600">
+      <option value="">Todas las categorías</option>
+      <option value="nacional">Nacional</option>
+      <option value="deportes">Deportes</option>
+      <option value="espectaculos">Espectáculos</option>
+      <option value="politica">Política</option>
+    </select>
+    <button class="bg-primary text-white p-2 rounded-lg hover:bg-red-600 transition-colors">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
