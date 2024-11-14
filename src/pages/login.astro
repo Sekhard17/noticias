@@ -1,13 +1,18 @@
 ---
-// Página de inicio de sesión
 import Layout from '../layouts/Layout.astro';
+import { authService } from '../lib/authService';
+
+// Redirigir si ya está autenticado
+if (authService.isAuthenticated()) {
+  return Astro.redirect('/');
+}
 ---
 
 <Layout title="Iniciar Sesión - La Cuarta">
-  <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8">
+  <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8 mt-8">
     <h1 class="text-3xl font-bold text-center mb-8">Iniciar Sesión</h1>
     
-    <form class="space-y-6">
+    <form id="loginForm" class="space-y-6">
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
         <input
@@ -20,11 +25,11 @@ import Layout from '../layouts/Layout.astro';
       </div>
       
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+        <label for="contraseña" class="block text-sm font-medium text-gray-700">Contraseña</label>
         <input
           type="password"
-          id="password"
-          name="password"
+          id="contraseña"
+          name="contraseña"
           required
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
         />
@@ -47,6 +52,8 @@ import Layout from '../layouts/Layout.astro';
           ¿Olvidaste tu contraseña?
         </a>
       </div>
+
+      <div id="errorMessage" class="text-red-600 text-sm hidden"></div>
       
       <button
         type="submit"
@@ -66,3 +73,35 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </div>
 </Layout>
+
+<script>
+  import { login } from '../lib/auth';
+
+  const form = document.getElementById('loginForm') as HTMLFormElement;
+  const errorMessage = document.getElementById('errorMessage');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    try {
+      const formData = new FormData(form);
+      const credentials = {
+        email: formData.get('email') as string,
+        contraseña: formData.get('contraseña') as string,
+      };
+
+      const response = await login(credentials);
+      
+      if (response.token) {
+        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('userData', JSON.stringify(response.user));
+        window.location.href = '/';
+      }
+    } catch (error) {
+      if (errorMessage) {
+        errorMessage.textContent = error instanceof Error ? error.message : 'Error al iniciar sesión. Por favor, verifica tus credenciales.';
+        errorMessage.classList.remove('hidden');
+      }
+    }
+  });
+</script>

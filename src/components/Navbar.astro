@@ -1,5 +1,5 @@
 ---
-// Navbar mejorado con logo centrado y elementos a los lados
+import { authService } from '../lib/authService';
 ---
 
 <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
@@ -7,7 +7,7 @@
     <div class="flex items-center justify-between h-20">
       <!-- Elementos izquierdos -->
       <div class="flex items-center space-x-6">
-        <a href="/nacional" class="text-gray-700 hover:text-primary transition-colors font-medium">Nacional</a>
+        <a href="/noticias-ayer" class="text-gray-700 hover:text-primary transition-colors font-medium">Noticias de Ayer</a>
         <a href="/deportes" class="text-gray-700 hover:text-primary transition-colors font-medium">Deportes</a>
         <a href="/espectaculos" class="text-gray-700 hover:text-primary transition-colors font-medium">Espectáculos</a>
       </div>
@@ -24,12 +24,17 @@
         <button class="text-gray-700 hover:text-primary transition-colors">
           <i class="fas fa-search text-xl"></i>
         </button>
-        <a href="/login" class="text-gray-700 hover:text-primary transition-colors">
-          <i class="fas fa-user text-xl"></i>
-        </a>
-        <a href="/registro" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors font-medium">
-          Registrarse
-        </a>
+        
+        <div id="authSection">
+          <div class="flex items-center space-x-4">
+            <a href="/login" class="text-gray-700 hover:text-primary transition-colors">
+              Iniciar Sesión
+            </a>
+            <a href="/registro" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors font-medium">
+              Registrarse
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -37,3 +42,40 @@
 
 <!-- Espaciador para compensar el navbar fijo -->
 <div class="h-20"></div>
+
+<script>
+  import { authService } from '../lib/authService';
+  import { logout } from '../lib/auth';
+
+  const authSection = document.getElementById('authSection');
+  const isAuthenticated = authService.isAuthenticated();
+  const user = authService.getUser();
+
+  if (authSection && isAuthenticated && user) {
+    authSection.innerHTML = `
+      <div class="relative group">
+        <button class="flex items-center space-x-2 text-gray-700 hover:text-primary transition-colors">
+          <i class="fas fa-user-circle text-xl"></i>
+          <span class="hidden md:inline">${user.nombre} ${user.apellido}</span>
+        </button>
+        <div class="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+          <a href="/perfil" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            Mi Perfil
+          </a>
+          <button 
+            id="logoutButton"
+            class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+          >
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    `;
+
+    // Event Listener para el botón de logout
+    const logoutButton = document.getElementById('logoutButton');
+    logoutButton?.addEventListener('click', () => {
+      logout();
+    });
+  }
+</script>

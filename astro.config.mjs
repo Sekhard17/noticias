@@ -8,5 +8,19 @@ export default defineConfig({
   output: 'server',
   adapter: node({
     mode: "standalone"
-  })
+  }),
+  server: {
+    port: 4321,
+    host: true
+  },
+  vite: {
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3001',
+          changeOrigin: true
+        }
+      }
+    }
+  }
 });

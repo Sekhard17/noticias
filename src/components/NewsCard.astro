@@ -1,43 +1,83 @@
 ---
-// Componente de tarjeta de noticia mejorado
-const { title, excerpt, image, category, date, author } = Astro.props;
+interface Props {
+  id: number;
+  title: string;
+  subtitle: string;
+  content: string;
+  image: string;
+  category: string;
+  date: string;
+  author: {
+    name: string;
+    avatar: string;
+  };
+  tags: string[];
+  comments: any[];
+}
+
+const { title, subtitle, content, image, category, date, author, tags, comments } = Astro.props;
 ---
 
-<article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group">
+<article class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
   <div class="relative">
+    <!-- Imagen principal -->
     <img 
       src={image} 
-      alt={title} 
-      class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+      alt={title}
+      class="w-full h-[400px] object-cover"
     />
-    <div class="absolute top-0 right-0 bg-primary text-white px-3 py-1 rounded-bl-lg font-medium text-sm">
-      {category}
-    </div>
-  </div>
-  
-  <div class="p-6">
-    <h2 class="text-xl font-bold mb-3 text-secondary group-hover:text-primary transition-colors line-clamp-2">
-      <a href={`/noticias/${title.toLowerCase().replace(/ /g, '-')}`}>
-        {title}
-      </a>
-    </h2>
-    <p class="text-gray-600 mb-4 text-sm line-clamp-3">{excerpt}</p>
     
-    <div class="flex items-center justify-between text-sm text-gray-500 border-t pt-4">
-      <div class="flex items-center">
-        <img 
-          src={author?.avatar} 
-          alt={author?.name} 
-          class="w-8 h-8 rounded-full mr-2 object-cover"
-        />
-        <span class="font-medium">{author?.name}</span>
+    <!-- Overlay con gradiente -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent">
+      <!-- Contenido superpuesto -->
+      <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+        <div class="mb-2 flex items-center gap-2">
+          <span class="bg-primary px-3 py-1 rounded-full text-sm font-medium">
+            {category}
+          </span>
+          {tags.map(tag => (
+            <span class="bg-white/20 px-3 py-1 rounded-full text-sm">
+              {tag}
+            </span>
+          ))}
+        </div>
+        
+        <h2 class="text-3xl font-bold mb-2 leading-tight">
+          {title}
+        </h2>
+        <p class="text-lg text-gray-200 mb-4">
+          {subtitle}
+        </p>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <img 
+              src={author.avatar} 
+              alt={author.name}
+              class="w-10 h-10 rounded-full border-2 border-white"
+            />
+            <div>
+              <p class="font-medium">{author.name}</p>
+              <time class="text-sm text-gray-300">{new Date(date).toLocaleDateString('es-CL')}</time>
+            </div>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <button class="flex items-center space-x-1 hover:text-primary transition-colors">
+              <i class="fas fa-thumbs-up"></i>
+              <span>0</span>
+            </button>
+            <button class="flex items-center space-x-1 hover:text-primary transition-colors">
+              <i class="fas fa-thumbs-down"></i>
+              <span>0</span>
+            </button>
+            <button class="flex items-center space-x-1 hover:text-primary transition-colors">
+              <i class="fas fa-comment"></i>
+              <span>{comments.length}</span>
+            </button>
+          </div>
+        </div>
       </div>
-      <time datetime={date} class="text-xs">
-        {new Date(date).toLocaleDateString('es-CL', {
-          day: 'numeric',
-          month: 'short'
-        })}
-      </time>
     </div>
   </div>
 </article>

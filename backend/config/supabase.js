@@ -3,9 +3,19 @@
 // A través de las variables de entorno SUPABASE_URL y SUPABASE_KEY
 
 const { createClient } = require('@supabase/supabase-js')
-const SUPABASE_URL = process.env.SUPABASE_URL
-const SUPABASE_KEY = process.env.SUPABASE_KEY
+require('dotenv').config()
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_KEY
+
+console.log('Verificando configuración Supabase:')
+console.log('URL:', supabaseUrl)
+console.log('Key existe:', !!supabaseKey)
+
+if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Faltan las credenciales de Supabase en las variables de entorno')
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 module.exports = supabase

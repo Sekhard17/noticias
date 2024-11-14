@@ -11,8 +11,16 @@
   "description": "",
   "dependencies": {
     "@supabase/supabase-js": "^2.46.1",
+    "choices.js": "^11.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "express-fileupload": "^1.5.1",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^2.7.0",
+    "quill": "^2.0.2",
+    "tom-select": "^2.3.1",
+    "uuid": "^11.0.3"
   }
 }

@@ -1,0 +1,125 @@
+---
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>{title}</title>
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex h-screen">
+      <aside class="w-64 bg-white shadow-lg flex flex-col">
+        <div class="p-6 flex-1">
+          <img src="/logo-cuarta.svg" alt="La Cuarta" class="h-8 mb-8">
+          <nav class="space-y-2" id="nav-menu">
+            <!-- El menú se llenará con JavaScript -->
+          </nav>
+        </div>
+
+        <!-- Nueva sección de usuario -->
+        <div class="border-t border-gray-200 p-4" id="user-section">
+          <div class="text-sm">
+            <div class="font-semibold" id="user-name"></div>
+            <div class="text-gray-500 text-xs" id="user-role"></div>
+          </div>
+          <button 
+            id="logout-btn"
+            class="mt-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150 flex items-center gap-2"
+          >
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Cerrar Sesión</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="flex-1 overflow-auto">
+        <slot />
+      </main>
+    </div>
+
+    <script>
+      import { authService } from '../lib/authService';
+      import { logout } from '../lib/auth';
+
+      function updateNavMenu() {
+        const user = authService.getUser();
+        const rolId = user?.rol_id;
+        const navMenu = document.getElementById('nav-menu');
+
+        if (!navMenu) return;
+
+        const menuItems = [
+          `<a href="/dashboard" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+          </a>`,
+        ];
+
+        // Roles que pueden crear y administrar noticias (admin, editor y escritor)
+        if (rolId === 1 || rolId === 3 || rolId === 4) {
+          menuItems.push(`
+            <a href="/dashboard/create-news" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-plus"></i>
+              <span>Crear Noticia</span>
+            </a>
+            <a href="/dashboard/manage-news" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-newspaper"></i>
+              <span>Administrar Noticias</span>
+            </a>
+          `);
+        }
+
+        // Solo admin puede administrar usuarios
+        if (rolId === 1) {
+          menuItems.push(`
+            <a href="/dashboard/manage-users" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-users"></i>
+              <span>Administrar Usuarios</span>
+            </a>
+          `);
+        }
+
+        navMenu.innerHTML = menuItems.join('');
+      }
+
+      function updateUserSection() {
+        const user = authService.getUser();
+        if (!user) return;
+
+        const userNameEl = document.getElementById('user-name');
+        const userRoleEl = document.getElementById('user-role');
+        
+        if (!userNameEl || !userRoleEl) return;
+        
+        userNameEl.textContent = `${user.nombre} ${user.apellido}`;
+        
+        const roles = {
+          1: 'Administrador',
+          2: 'Usuario',
+          3: 'Editor',
+          4: 'Escritor'
+        };
+        userRoleEl.textContent = roles[user.rol_id] || 'Rol desconocido';
+      }
+
+      // Event Listeners
+      document.addEventListener('DOMContentLoaded', () => {
+        updateNavMenu();
+        updateUserSection();
+        
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', () => {
+            logout();
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

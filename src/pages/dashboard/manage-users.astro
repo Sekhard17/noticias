@@ -1,0 +1,553 @@
+---
+import Layout from '../../layouts/DashboardLayout.astro';
+---
+
+<Layout title="Gestión de Usuarios - Dashboard">
+  <div class="min-h-screen bg-gray-50/30">
+    <!-- Header mejorado -->
+    <div class="bg-white shadow-sm border-b">
+      <div class="px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Gestión de Usuarios</h1>
+            <p class="mt-1 text-sm text-gray-500">Administra los usuarios del sistema y sus roles</p>
+          </div>
+          <div class="mt-4 sm:mt-0">
+            <button 
+              id="createUserBtn"
+              class="inline-flex items-center px-4 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+            >
+              <i class="fas fa-user-plus mr-2"></i>
+              Nuevo Usuario
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Filtros y Búsqueda -->
+      <div class="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="relative">
+            <label for="searchUser" class="block text-sm font-medium text-gray-700 mb-2">
+              Buscar usuarios
+            </label>
+            <div class="relative">
+              <input
+                type="text"
+                id="searchUser"
+                class="block w-full pl-10 pr-4 py-2.5 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Buscar por nombre, email..."
+              />
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                <i class="fas fa-search text-gray-400"></i>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label for="roleFilter" class="block text-sm font-medium text-gray-700 mb-2">
+              Filtrar por rol
+            </label>
+            <select
+              id="roleFilter"
+              class="block w-full px-4 py-2.5 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <!-- Se llenará dinámicamente -->
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de Usuarios -->
+      <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
+                <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
+                <th class="px-6 py-3.5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
+              <!-- Los usuarios se cargarán aquí dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Usuario -->
+  <div id="userModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full transform transition-all">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h3 class="text-lg font-medium text-gray-900" id="modalTitle">
+            <i class="fas fa-user-plus mr-2 text-indigo-600"></i>
+            <span>Nuevo Usuario</span>
+          </h3>
+          <button type="button" id="closeModalBtn" class="text-gray-400 hover:text-gray-500">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="userForm" class="p-6">
+          <div class="space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  <i class="fas fa-user text-gray-400 mr-1"></i>
+                  Nombre
+                </label>
+                <input 
+                  type="text" 
+                  name="nombre" 
+                  required 
+                  class="form-input" 
+                  placeholder="Nombre del usuario"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  <i class="fas fa-user text-gray-400 mr-1"></i>
+                  Apellido
+                </label>
+                <input 
+                  type="text" 
+                  name="apellido" 
+                  required 
+                  class="form-input" 
+                  placeholder="Apellido del usuario"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                <i class="fas fa-envelope text-gray-400 mr-1"></i>
+                Email
+              </label>
+              <input 
+                type="email" 
+                name="email" 
+                required 
+                class="form-input" 
+                placeholder="correo@ejemplo.com"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                <i class="fas fa-lock text-gray-400 mr-1"></i>
+                Contraseña
+              </label>
+              <div class="relative">
+                <input 
+                  type="password" 
+                  name="contraseña" 
+                  required 
+                  class="form-input pr-10" 
+                  id="passwordInput"
+                />
+                <button 
+                  type="button"
+                  id="togglePassword"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                <i class="fas fa-user-tag text-gray-400 mr-1"></i>
+                Rol
+              </label>
+              <select name="rol_id" required class="form-select" id="rolSelect">
+                <!-- Se llenará dinámicamente -->
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-6 flex justify-end space-x-3">
+            <button type="button" id="cancelUserBtn" class="btn-secondary">
+              <i class="fas fa-times mr-2"></i>
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-save mr-2"></i>
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmación para Eliminar -->
+  <div id="deleteModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+        <div class="text-center">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+            <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Confirmar Eliminación</h3>
+          <p class="text-sm text-gray-500">
+            ¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.
+          </p>
+        </div>
+        <div class="mt-6 flex justify-end space-x-3">
+          <button type="button" id="cancelDeleteBtn" class="btn-secondary">
+            <i class="fas fa-times mr-2"></i>
+            Cancelar
+          </button>
+          <button type="button" id="confirmDeleteBtn" class="btn-danger">
+            <i class="fas fa-trash mr-2"></i>
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout> 
+
+<style>
+    .form-input {
+      @apply block w-full px-4 py-2.5 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-200;
+    }
+  
+    .form-select {
+      @apply block w-full px-4 py-2.5 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-200;
+    }
+  
+    .btn-primary {
+      @apply inline-flex items-center px-4 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200;
+    }
+  
+    .btn-secondary {
+      @apply inline-flex items-center px-4 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200;
+    }
+  
+    .btn-danger {
+      @apply inline-flex items-center px-4 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200;
+    }
+  </style>
+  
+  <script>
+    // Función para mostrar notificaciones
+    function showNotification(message: string, type: 'success' | 'error' = 'success') {
+      // Aquí puedes implementar tu sistema de notificaciones
+      console.log(`${type}: ${message}`);
+    }
+  
+    // Cargar roles dinámicamente
+    async function loadRoles() {
+      try {
+        const response = await fetch('http://localhost:3001/api/roles');
+        if (!response.ok) throw new Error('Error al cargar roles');
+        
+        const roles = await response.json();
+        roles.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        
+        // Llenar selects de roles
+        const roleSelects = ['roleFilter', 'rolSelect'];
+        roleSelects.forEach(selectId => {
+          const select = document.getElementById(selectId) as HTMLSelectElement;
+          if (select) {
+            select.innerHTML = selectId === 'roleFilter' 
+              ? '<option value="">Todos los roles</option>' 
+              : '';
+            
+            roles.forEach(role => {
+              select.innerHTML += `<option value="${role.id}">${role.nombre}</option>`;
+            });
+          }
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al cargar roles', 'error');
+      }
+    }
+  
+    // Cargar usuarios
+    async function loadUsers(search = '', role = '') {
+      try {
+        const response = await fetch('http://localhost:3001/api/auth/users', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+  
+        if (!response.ok) throw new Error('Error al obtener usuarios');
+        
+        const users = await response.json();
+        const tbody = document.getElementById('usersTableBody');
+        if (!tbody) return;
+  
+        tbody.innerHTML = '';
+  
+        // Filtrar usuarios
+        const filteredUsers = users.filter(user => {
+          const matchSearch = search === '' || 
+            `${user.nombre} ${user.apellido}`.toLowerCase().includes(search.toLowerCase()) ||
+            user.email.toLowerCase().includes(search.toLowerCase());
+          
+          const matchRole = role === '' || user.rol_id.toString() === role;
+          
+          return matchSearch && matchRole;
+        });
+  
+        if (filteredUsers.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                No se encontraron usuarios
+              </td>
+            </tr>
+          `;
+          return;
+        }
+  
+        filteredUsers.forEach(user => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-gray-50 transition-colors duration-200';
+          tr.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10">
+                  <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <span class="text-indigo-600 font-medium text-sm">
+                      ${user.nombre.charAt(0)}${user.apellido.charAt(0)}
+                    </span>
+                  </div>
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">${user.nombre} ${user.apellido}</div>
+                  <div class="text-sm text-gray-500">Creado el: ${new Date(user.created_at).toLocaleDateString()}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">${user.email}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                user.rol_id === 1 ? 'bg-purple-100 text-purple-800' :
+                user.rol_id === 2 ? 'bg-blue-100 text-blue-800' :
+                'bg-gray-100 text-gray-800'
+              }">
+                ${user.roles?.nombre || 'Usuario'}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button 
+                class="edit-user-btn text-indigo-600 hover:text-indigo-900 mr-3 transition-colors duration-200" 
+                data-user-id="${user.id}"
+                title="Editar usuario"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+              <button 
+                class="delete-user-btn text-red-600 hover:text-red-900 transition-colors duration-200" 
+                data-user-id="${user.id}"
+                title="Eliminar usuario"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          `;
+  
+          // Agregar event listeners
+          const editBtn = tr.querySelector('.edit-user-btn');
+          const deleteBtn = tr.querySelector('.delete-user-btn');
+  
+          editBtn?.addEventListener('click', () => editUser(user.id));
+          deleteBtn?.addEventListener('click', () => {
+            const deleteModal = document.getElementById('deleteModal');
+            if (deleteModal) {
+              deleteModal.classList.remove('hidden');
+              deleteModal.dataset.userId = user.id;
+            }
+          });
+  
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al cargar usuarios', 'error');
+      }
+    }
+  
+    // Función para editar usuario
+    async function editUser(userId: string) {
+      try {
+        const response = await fetch(`http://localhost:3001/api/auth/users/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+  
+        if (!response.ok) throw new Error('Error al obtener usuario');
+        
+        const user = await response.json();
+        
+        const form = document.getElementById('userForm') as HTMLFormElement;
+        form.nombre.value = user.nombre;
+        form.apellido.value = user.apellido;
+        form.email.value = user.email;
+        form.rol_id.value = user.rol_id;
+        
+        const passwordInput = form.querySelector('[name="contraseña"]') as HTMLInputElement;
+        passwordInput.required = false;
+        passwordInput.placeholder = '••••••••';
+        
+        const modalTitle = document.getElementById('modalTitle')!;
+        modalTitle.innerHTML = `
+          <i class="fas fa-user-edit mr-2 text-indigo-600"></i>
+          <span>Editar Usuario</span>
+        `;
+        
+        form.dataset.userId = userId;
+        
+        document.getElementById('userModal')?.classList.remove('hidden');
+      } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al cargar usuario', 'error');
+      }
+    }
+  
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUsers();
+      loadRoles();
+  
+      // Búsqueda y filtros
+      let searchTimeout: NodeJS.Timeout;
+      document.getElementById('searchUser')?.addEventListener('input', (e) => {
+        const target = e.target as HTMLInputElement;
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          const roleFilter = document.getElementById('roleFilter') as HTMLSelectElement;
+          loadUsers(target.value, roleFilter.value);
+        }, 300);
+      });
+  
+      document.getElementById('roleFilter')?.addEventListener('change', (e) => {
+        const target = e.target as HTMLSelectElement;
+        const searchInput = document.getElementById('searchUser') as HTMLInputElement;
+        loadUsers(searchInput.value, target.value);
+      });
+  
+      // Modal handlers
+      document.getElementById('createUserBtn')?.addEventListener('click', () => {
+        const form = document.getElementById('userForm') as HTMLFormElement;
+        form.reset();
+        delete form.dataset.userId;
+        
+        const passwordInput = form.querySelector('[name="contraseña"]') as HTMLInputElement;
+        passwordInput.required = true;
+        passwordInput.placeholder = 'Contraseña';
+        
+        const modalTitle = document.getElementById('modalTitle')!;
+        modalTitle.innerHTML = `
+          <i class="fas fa-user-plus mr-2 text-indigo-600"></i>
+          <span>Nuevo Usuario</span>
+        `;
+        
+        document.getElementById('userModal')?.classList.remove('hidden');
+      });
+  
+      ['cancelUserBtn', 'closeModalBtn'].forEach(id => {
+        document.getElementById(id)?.addEventListener('click', () => {
+          document.getElementById('userModal')?.classList.add('hidden');
+        });
+      });
+  
+      // Delete modal handlers
+      document.getElementById('cancelDeleteBtn')?.addEventListener('click', () => {
+        const deleteModal = document.getElementById('deleteModal');
+        if (deleteModal) {
+          deleteModal.classList.add('hidden');
+          delete deleteModal.dataset.userId;
+        }
+      });
+  
+      document.getElementById('confirmDeleteBtn')?.addEventListener('click', async () => {
+        const deleteModal = document.getElementById('deleteModal');
+        const userId = deleteModal?.dataset.userId;
+  
+        if (!userId) return;
+  
+        try {
+          const response = await fetch(`http://localhost:3001/api/auth/users/${userId}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+  
+          if (!response.ok) throw new Error('Error al eliminar usuario');
+  
+          showNotification('Usuario eliminado exitosamente');
+          deleteModal?.classList.add('hidden');
+          loadUsers();
+        } catch (error) {
+          console.error('Error:', error);
+          showNotification('Error al eliminar usuario', 'error');
+        }
+      });
+  
+      // Form submit handler
+      const userForm = document.getElementById('userForm') as HTMLFormElement;
+      userForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(userForm);
+        const userData = Object.fromEntries(formData.entries());
+        const userId = userForm.dataset.userId;
+  
+        try {
+          const url = userId 
+            ? `http://localhost:3001/api/auth/users/${userId}`
+            : 'http://localhost:3001/api/auth/register';
+            
+          const method = userId ? 'PUT' : 'POST';
+  
+          const response = await fetch(url, {
+            method,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(userData),
+          });
+  
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Error en la operación');
+          }
+  
+          showNotification(userId ? 'Usuario actualizado exitosamente' : 'Usuario creado exitosamente');
+          document.getElementById('userModal')?.classList.add('hidden');
+          loadUsers();
+  
+        } catch (error) {
+          console.error('Error:', error);
+          showNotification(error.message, 'error');
+        }
+      });
+  
+      // Password toggle
+      document.getElementById('togglePassword')?.addEventListener('click', function() {
+        const passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        this.innerHTML = `<i class="fas fa-${type === 'password' ? 'eye' : 'eye-slash'}"></i>`;
+      });
+    });
+  </script>

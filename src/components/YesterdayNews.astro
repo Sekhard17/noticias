@@ -1,0 +1,56 @@
+---
+const yesterdayNews = [
+  {
+    title: "¡LA JEFA SE FUE EN LA DURA!",
+    image: "../../public/noticias-img/1.png",
+    comments: [
+      {
+        user: "Usuario123",
+        content: "Increíble noticia",
+        likes: 15,
+        dislikes: 2
+      }
+      // ... más comentarios
+    ]
+  }
+  // ... más noticias de ayer
+];
+---
+
+<div class="bg-white rounded-xl shadow-lg p-6">
+  <h2 class="text-2xl font-heading font-bold text-secondary mb-6 border-b-4 border-primary pb-2">
+    Noticias de Ayer
+  </h2>
+  
+  <div class="space-y-6">
+    {yesterdayNews.map(news => (
+      <div class="border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+        <img 
+          src={news.image} 
+          alt={news.title}
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-bold mb-2">{news.title}</h3>
+          
+          <!-- Comentarios destacados -->
+          <div class="mt-4 space-y-3">
+            <h4 class="font-medium text-gray-700">Comentarios Destacados</h4>
+            {news.comments.slice(0, 2).map(comment => (
+              <div class="bg-gray-50 p-3 rounded">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-medium text-sm">{comment.user}</span>
+                  <div class="flex items-center space-x-2 text-sm">
+                    <span class="text-green-600">+{comment.likes}</span>
+                    <span class="text-red-600">-{comment.dislikes}</span>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-600">{comment.content}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
