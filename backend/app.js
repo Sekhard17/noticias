@@ -1,16 +1,16 @@
 // backend/app.js
-// Aquí vamos a importar las librerías necesarias para el funcionamiento del servidor
-const express = require('express')
-const cors = require('cors')
-
 //Aquí importamos las rutas de la aplicación
-
+const express = require('express')
 const authRoutes = require('./routes/authRoutes')
 const newsRoutes = require('./routes/newsRoutes')
 const commentRoutes = require('./routes/commentRoutes')
 const tagRoutes = require('./routes/tagRoutes')
 const validationRoutes = require('./routes/validationRoutes')
 
+const app = express()
+const PORT = process.env.PORT || 3001
+
+//Middleware para parsear JSON
 app.use(express.json())
 
 //Configuración de RUTAS OFICIALES
@@ -21,4 +21,8 @@ app.use('/api/comments', commentRoutes)
 app.use('/api/tags', tagRoutes)
 app.use('/api/validation', validationRoutes)
 
-module.exports = app // -> Exportamos la APP sin iniciar el servidor
+//Iniciar el servidor
+
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`)
+})
