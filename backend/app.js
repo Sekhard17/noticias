@@ -1,6 +1,7 @@
 // backend/app.js
 //Aquí importamos las rutas de la aplicación
 const express = require('express')
+require('dotenv').config()
 const authRoutes = require('./routes/authRoutes')
 const newsRoutes = require('./routes/newsRoutes')
 const commentRoutes = require('./routes/commentRoutes')
